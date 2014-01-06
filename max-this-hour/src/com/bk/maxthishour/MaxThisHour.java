@@ -1,10 +1,10 @@
 package com.bk.maxthishour;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
 
 public class MaxThisHour implements ApplicationListener {
+
+	public static final String strTag = "MAHinfo";
 
 	@Override
 	public void create() {
@@ -13,17 +13,17 @@ public class MaxThisHour implements ApplicationListener {
 
 	@Override
 	public void dispose() {
+		mthGUI.getInstance().dispose();
 	}
 
 	@Override
 	public void render() {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
+		mthGUI.getInstance().render();
 	}
 
 	@Override
 	public void resize(int width, int height) {
+		mthGUI.getInstance().resize(width, height);
 	}
 
 	@Override
