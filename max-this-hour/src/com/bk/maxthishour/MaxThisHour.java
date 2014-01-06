@@ -5,6 +5,15 @@ import com.badlogic.gdx.ApplicationListener;
 public class MaxThisHour implements ApplicationListener {
 
 	public static final String strTag = "MAHinfo";
+	private static SpecialFeatures mySpecialFeatureObject;
+
+	public MaxThisHour() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public MaxThisHour(SpecialFeatures specialFeatureObject) {
+		mySpecialFeatureObject = specialFeatureObject;
+	}
 
 	@Override
 	public void create() {
@@ -32,5 +41,10 @@ public class MaxThisHour implements ApplicationListener {
 
 	@Override
 	public void resume() {
+		mthGUI.getInstance().resume();
+	}
+
+	public static SpecialFeatures getMySpecialFeatureObject() {
+		return mySpecialFeatureObject;
 	}
 }

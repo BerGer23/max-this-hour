@@ -3,8 +3,11 @@ package com.bk.maxthishour;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.badlogic.gdx.Gdx;
+
 public class mthTimer {
-	static mthTimer myInstance;
+	private static mthTimer myInstance;
+	private boolean running = false;
 	Timer timer;
 
 	final int intervalwork = 60 * 48;
@@ -14,7 +17,6 @@ public class mthTimer {
 	private int mode = 0; // 0 = nichts passiert, 1 run in work, 2 run in pause
 
 	public mthTimer() {
-		timer = new Timer();
 	}
 
 	public static mthTimer getInstance() {
@@ -24,24 +26,39 @@ public class mthTimer {
 		return myInstance;
 	}
 
-	public void startTimer() {
-		switch (mode) {
-		case 0:
-			interval = intervalwork;
-			mode++;
-			break;
-		case 1:
-			interval = intervalpause;
-			mode++;
-			break;
-		}
-		timer.scheduleAtFixedRate(new TimerTask() {
+	public void startstopTimer() {
 
-			@Override
-			public void run() {
-				iterateInterval();
+		if (!running) {
+			timer = new Timer();
+			if (interval < 1) {
+				switch (mode) {
+				case 0:
+					mode++;
+				case 1:
+					interval = intervalwork;
+					break;
+				case 2:
+					interval = intervalpause;
+					break;
+				}
 			}
-		}, 1000, 1000);
+
+			if (mthGUI.getInstance().isChkMuteChecked() && mode < 2)
+				mthUtils.Mute();
+
+			timer.scheduleAtFixedRate(new TimerTask() {
+
+				@Override
+				public void run() {
+					iterateInterval();
+				}
+			}, 1000, 1000);
+			running = true;
+		} else {
+			mthUtils.Unmute();
+			running = false;
+			timer.cancel();
+		}
 	}
 
 	private void iterateInterval() {
@@ -52,7 +69,9 @@ public class mthTimer {
 	}
 
 	private void timerRanOut() {
+		Gdx.input.vibrate(500);
 		timer.cancel();
+		running = false;
 		switch (mode) {
 		case 1:
 			mode = 2;
@@ -61,10 +80,19 @@ public class mthTimer {
 			mode = 1;
 			break;
 		}
+		startstopTimer();
 	}
 
 	public int getMode() {
 		return mode;
+	}
+
+	public int getInterval() {
+		return interval;
+	}
+
+	public boolean getRunning() {
+		return running;
 	}
 
 }
