@@ -18,5 +18,6 @@ public class MainActivity extends AndroidApplication {
 		initialize(new MaxThisHour(new SpecialFeaturesAndroid(
 				(AudioManager) this.getSystemService(Context.AUDIO_SERVICE))),
 				cfg);
+
 	}
 }

@@ -23,20 +23,19 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class mthGUI {
 
 	static mthGUI myInstance;
-	private Stage stage;
-	private Skin skin;
+	private final Stage stage;
+	private final Skin skin;
 	// private SpriteBatch batch;
 
-	private String[] modes = { "IDLE", "TIME TO WORK", "TIME TO PAUSE",
+	private final String[] modes = { "IDLE", "TIME TO WORK", "TIME TO PAUSE",
 			"ON HOLD" };
 	private String myTimeString = new String();
 
 	// GUI elements
-	private Label lblStatus;
-	private CheckBox chkMute;
+	private final Label lblStatus;
+	private final CheckBox chkMute;
 
 	// textures
-	static Texture tex;
 
 	public static mthGUI getInstance() {
 		if (myInstance == null) {
@@ -60,8 +59,7 @@ public class mthGUI {
 		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
 		pixmap.setColor(Color.WHITE);
 		pixmap.fill();
-		tex = new Texture(pixmap);
-		skin.add("white", tex);
+		skin.add("white", new Texture(pixmap));
 
 		// Store the default libgdx font under the name "default".
 		skin.add("default", new BitmapFont());

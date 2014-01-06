@@ -4,4 +4,6 @@ public interface SpecialFeatures {
 	public void Mute();
 
 	public void Unmute();
+
+	public void dispose();
 }

@@ -17,9 +17,14 @@ public class SpecialFeaturesAndroid implements SpecialFeatures {
 		volumeControl.setStreamMute(AudioManager.STREAM_RING, true);
 	}
 
+	@Override
 	public void Unmute() {
 		Log.d("MAHinfo", "clicked unmute");
 		volumeControl.setStreamMute(AudioManager.STREAM_RING, false);
+	}
+
+	@Override
+	public void dispose() {
 	}
 
 }
