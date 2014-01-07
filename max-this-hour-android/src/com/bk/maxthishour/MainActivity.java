@@ -3,7 +3,6 @@ package com.bk.maxthishour;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
@@ -21,7 +20,6 @@ public class MainActivity extends AndroidApplication {
 
 		myAM = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 		initialize(new MaxThisHour(new SpecialFeaturesAndroid(myAM)), cfg);
-		Log.d("", "yo");
 	}
 
 }
