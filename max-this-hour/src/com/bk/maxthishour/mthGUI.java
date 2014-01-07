@@ -28,6 +28,7 @@ public class mthGUI {
 	// GUI elements
 	private Label lblStatus;
 	private CheckBox chkMute;
+	private Texture txClock;
 	private Texture txLogo;
 	private Texture txKoala;
 
@@ -53,6 +54,7 @@ public class mthGUI {
 
 		skin.getFont("default-font").setScale(2.f, 2.f);
 
+		txClock = new Texture(Gdx.files.internal("data/clock.png"));
 		txLogo = new Texture(Gdx.files.internal("data/libgdx2.png"));
 		txKoala = new Texture(Gdx.files.internal("data/koala.png"));
 
@@ -110,6 +112,8 @@ public class mthGUI {
 	}
 
 	public void render() {
+		if (Gdx.input.justTouched())
+			Gdx.app.log(MaxThisHour.strTag, "just touched :)");
 		switch (mthTimer.getInstance().getMode()) {
 		case 0:
 			Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1); // grey
@@ -136,7 +140,10 @@ public class mthGUI {
 		stage.draw();
 		Table.drawDebug(stage);
 		batch.begin();
-		batch.draw(txKoala, x / 2 - txKoala.getWidth() / 2, txLogo.getHeight());
+		// batch.draw(txKoala, x / 2 - txKoala.getWidth() / 2,
+		// txLogo.getHeight());
+		batch.draw(txClock, x / 2 - txClock.getWidth() / 2,
+				y - txClock.getHeight() - 30);
 		batch.draw(txLogo, x / 2 - txLogo.getWidth() / 2, 0);
 		batch.end();
 	}
