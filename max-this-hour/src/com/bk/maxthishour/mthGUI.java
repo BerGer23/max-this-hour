@@ -143,7 +143,7 @@ public class mthGUI {
 		// batch.draw(txKoala, x / 2 - txKoala.getWidth() / 2,
 		// txLogo.getHeight());
 		batch.draw(txClock, x / 2 - txClock.getWidth() / 2,
-				y - txClock.getHeight() - 30);
+				y - txClock.getHeight() - y / 20);
 		batch.draw(txLogo, x / 2 - txLogo.getWidth() / 2, 0);
 		batch.end();
 	}
