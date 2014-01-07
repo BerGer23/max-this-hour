@@ -67,9 +67,11 @@ public class mthGUI {
 		// mute checkbox
 		chkMute = new CheckBox("Mute for work", skin);
 		chkMute.setChecked(false);
-		chkMute.scale(5f);
+		// chkMute.scale(5f);
+		chkMute.getCells().get(0).width(50);
+		chkMute.getCells().get(0).height(50);
 
-		table.add(chkMute);
+		table.add(chkMute).width(50).spaceBottom(10);
 		table.row();
 
 		lblStatus = new Label("Status: IDLE", skin);
