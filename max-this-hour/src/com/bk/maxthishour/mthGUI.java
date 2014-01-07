@@ -1,31 +1,25 @@
 package com.bk.maxthishour;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class mthGUI {
 
-	static mthGUI myInstance;
+	private static mthGUI myInstance;
 	private Stage stage;
 	private Skin skin;
-	// private SpriteBatch batch;
+	private SpriteBatch batch;
 
 	private String[] modes = { "IDLE", "TIME TO WORK", "TIME TO PAUSE",
 			"ON HOLD" };
@@ -34,9 +28,11 @@ public class mthGUI {
 	// GUI elements
 	private Label lblStatus;
 	private CheckBox chkMute;
+	private Texture txLogo;
+	private Texture txKoala;
 
-	// textures
-	static Texture tex;
+	// display variables
+	float x, y;
 
 	public static mthGUI getInstance() {
 		if (myInstance == null) {
@@ -45,48 +41,20 @@ public class mthGUI {
 		return myInstance;
 	}
 
-	public mthGUI() {
-		// batch = new SpriteBatch();
+	private mthGUI() {
+		x = Gdx.graphics.getWidth();
+		y = Gdx.graphics.getHeight();
+
+		batch = new SpriteBatch();
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
-		// A skin can be loaded via JSON or defined programmatically, either is
-		// fine. Using a skin is optional but strongly
-		// recommended solely for the convenience of getting a texture, region,
-		// etc as a drawable, tinted drawable, etc.
-		skin = new Skin();
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-		// Generate a 1x1 white texture and store it in the skin named "white".
-		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
-		pixmap.setColor(Color.WHITE);
-		pixmap.fill();
-		tex = new Texture(pixmap);
-		skin.add("white", tex);
+		skin.getFont("default-font").setScale(2.f, 2.f);
 
-		// Store the default libgdx font under the name "default".
-		skin.add("default", new BitmapFont());
-
-		// Configure a TextButtonStyle and name it "default". Skin resources are
-		// stored by type, so this doesn't overwrite the font.
-		TextButtonStyle textButtonStyle = new TextButtonStyle();
-		textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
-		textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
-		textButtonStyle.checked = skin.newDrawable("white", Color.DARK_GRAY);
-		textButtonStyle.over = skin.newDrawable("white", Color.DARK_GRAY);
-		textButtonStyle.font = skin.getFont("default");
-		textButtonStyle.font.setScale(2.5f);
-		skin.add("default", textButtonStyle);
-
-		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.font = skin.getFont("default");
-		skin.add("default", labelStyle);
-
-		CheckBoxStyle checkboxStyle = new CheckBoxStyle();
-		checkboxStyle.checkboxOff = skin.newDrawable("white", Color.DARK_GRAY);
-		checkboxStyle.checkboxOn = skin.newDrawable("white", Color.RED);
-		checkboxStyle.checked = skin.newDrawable("white", Color.RED);
-		checkboxStyle.font = skin.getFont("default");
-		skin.add("default", checkboxStyle);
+		txLogo = new Texture(Gdx.files.internal("data/libgdx2.png"));
+		txKoala = new Texture(Gdx.files.internal("data/koala.png"));
 
 		// Create a table that fills the screen. Everything else will go inside
 		// this table.
@@ -97,20 +65,20 @@ public class mthGUI {
 		// mute checkbox
 		chkMute = new CheckBox("Mute for work", skin);
 		chkMute.setChecked(false);
+		chkMute.scale(5f);
 
 		table.add(chkMute);
 		table.row();
 
 		lblStatus = new Label("Status: IDLE", skin);
 		lblStatus.setAlignment(Align.top | Align.center);
-		table.add(lblStatus).minWidth(200).minHeight(110).fill()
-				.spaceBottom(20);
+		table.add(lblStatus).width(200f).height(100f).fill().spaceBottom(20);
 		table.row();
 
 		// Create a button with the "default" TextButtonStyle. A 3rd parameter
 		// can be used to specify a name other than "default".
 		final TextButton button = new TextButton("Start/Stop", skin);
-		table.add(button).height(150f).width(200f);
+		table.add(button).height(150f).width(250f);
 
 		button.addListener(new ClickListener() {
 			@Override
@@ -125,8 +93,20 @@ public class mthGUI {
 	}
 
 	public void dispose() {
+		Gdx.app.log(MaxThisHour.strTag, "disposing");
+
+		Gdx.input.setInputProcessor(null);
+
+		txLogo.dispose();
+		txKoala.dispose();
+
+		batch.dispose();
 		stage.dispose();
 		skin.dispose();
+
+		mthTimer.getInstance().dispose();
+
+		myInstance = null;
 	}
 
 	public void render() {
@@ -135,7 +115,7 @@ public class mthGUI {
 			Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1); // grey
 			break;
 		case 1:
-			Gdx.gl.glClearColor(0.f, 1.f, 0.f, 1); // green
+			Gdx.gl.glClearColor(0.f, 0.8f, 0.3f, 1); // green
 			break;
 		case 2:
 			Gdx.gl.glClearColor(0.f, 0.f, 1.f, 1);// blue
@@ -155,6 +135,10 @@ public class mthGUI {
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
 		Table.drawDebug(stage);
+		batch.begin();
+		batch.draw(txKoala, x / 2 - txKoala.getWidth() / 2, txLogo.getHeight());
+		batch.draw(txLogo, x / 2 - txLogo.getWidth() / 2, 0);
+		batch.end();
 	}
 
 	public void resize(int width, int height) {

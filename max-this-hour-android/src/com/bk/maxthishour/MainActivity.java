@@ -8,6 +8,9 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
 public class MainActivity extends AndroidApplication {
+
+	AudioManager myAM;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -15,8 +18,9 @@ public class MainActivity extends AndroidApplication {
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
 		cfg.useGL20 = false;
 
-		initialize(new MaxThisHour(new SpecialFeaturesAndroid(
-				(AudioManager) this.getSystemService(Context.AUDIO_SERVICE))),
-				cfg);
+		myAM = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+		initialize(new MaxThisHour(new SpecialFeaturesAndroid(myAM)), cfg);
+
 	}
+
 }
