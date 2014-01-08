@@ -17,11 +17,31 @@ public class mthUtils {
 
 	public static void Mute() {
 		Gdx.app.log(MaxThisHour.strTag, "trying to mute");
-		MaxThisHour.getMySpecialFeatureObject().Mute();
+		if (MaxThisHour.getMySpecialFeatureObject() != null)
+			MaxThisHour.getMySpecialFeatureObject().Mute();
 	}
 
 	public static void Unmute() {
 		Gdx.app.log(MaxThisHour.strTag, "trying to unmute");
-		MaxThisHour.getMySpecialFeatureObject().Unmute();
+		if (MaxThisHour.getMySpecialFeatureObject() != null)
+			MaxThisHour.getMySpecialFeatureObject().Unmute();
+	}
+
+	public static void notifyUser() {
+		switch (Gdx.app.getType()) {
+
+		case Android:
+			// android specific code
+			Gdx.input.vibrate(mthGUI.getInstance().updateMsToVibrate());
+			break;
+		case Desktop:
+			// desktop specific code
+			break;
+		case WebGL:
+			// / HTML5 specific code
+			break;
+		default:
+			break;
+		}
 	}
 }

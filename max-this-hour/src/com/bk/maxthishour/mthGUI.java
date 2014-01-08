@@ -4,15 +4,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class mthGUI {
@@ -30,6 +33,12 @@ public class mthGUI {
 
 	private final Label lblStatus;
 	private final CheckBox chkMute;
+
+	private final Slider sliVibrateLength;
+	private final Label lblVibrateLength;
+	private final int iVibMsPerTick = 1000;
+	private int iMsToVibrate;
+
 	private final Texture txClock;
 	private final Texture txLogo;
 	private final Texture txKoala;
@@ -48,6 +57,7 @@ public class mthGUI {
 	private mthGUI() {
 		x = Gdx.graphics.getWidth();
 		y = Gdx.graphics.getHeight();
+		Gdx.app.log(MaxThisHour.strTag, x + " " + y);
 
 		batch = new SpriteBatch();
 		stage = new Stage();
@@ -55,7 +65,7 @@ public class mthGUI {
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-		skin.getFont("default-font").setScale(2.f, 2.f);
+		skin.getFont("default-font").setScale(x / 400, y / 600);
 
 		txClock = new Texture(Gdx.files.internal("data/clock.png"));
 		txLogo = new Texture(Gdx.files.internal("data/libgdx2.png"));
@@ -70,7 +80,7 @@ public class mthGUI {
 		// mute checkbox
 		chkMute = new CheckBox("Mute phonecalls", skin);
 		chkMute.setChecked(false);
-		chkMute.getCells().get(0).size(50);
+		chkMute.getCells().get(0).size((x + y) / 35);
 		chkMute.addListener(new InputListener() {
 
 			@Override
@@ -86,18 +96,41 @@ public class mthGUI {
 			}
 		});
 
-		table.add(chkMute).width(50).spaceBottom(10);
+		table.add(chkMute).width(y / 15).spaceBottom(x / 200);
 		table.row();
 
 		lblStatus = new Label("Status: IDLE", skin);
-		lblStatus.setAlignment(Align.top | Align.center);
-		table.add(lblStatus).width(200f).height(100f).fill().spaceBottom(20);
+		lblStatus.setAlignment(Align.center);
+		table.add(lblStatus).width(y / 4).height(x / 10).fill()
+				.spaceBottom(x / 400);
+		table.row();
+
+		sliVibrateLength = new Slider(0.1f, 5f, 0.1f, false, skin);
+		sliVibrateLength.setValue(1f);
+		sliVibrateLength.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				// TODO Auto-generated method stub
+				lblVibrateLength
+						.setText("Move slider to adjust vibrate length: "
+								+ updateMsToVibrate() + " ms");
+			}
+		});
+
+		table.add(sliVibrateLength).width(y / 4).height(x / 10).fill();
+		table.row();
+
+		lblVibrateLength = new Label("Move slider to adjust vibrate length: "
+				+ updateMsToVibrate() + " ms", skin);
+		lblVibrateLength.setAlignment(Align.top | Align.center);
+		table.add(lblVibrateLength).width(y / 4).height(x / 10).fill()
+				.spaceBottom(10);
 		table.row();
 
 		// Create a button with the "default" TextButtonStyle. A 3rd parameter
 		// can be used to specify a name other than "default".
 		final TextButton button = new TextButton("Start/Stop", skin);
-		table.add(button).height(150f).width(250f);
+		table.add(button).height(y / 9).width(x / 2);
 
 		button.addListener(new ClickListener() {
 			@Override
@@ -129,8 +162,7 @@ public class mthGUI {
 	}
 
 	public void render() {
-		if (Gdx.input.justTouched())
-			Gdx.app.log(MaxThisHour.strTag, "just touched :)");
+
 		switch (mthTimer.getInstance().getMode()) {
 		case 0:
 			Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1); // grey
@@ -159,9 +191,11 @@ public class mthGUI {
 		batch.begin();
 		// batch.draw(txKoala, x / 2 - txKoala.getWidth() / 2,
 		// txLogo.getHeight());
-		batch.draw(txClock, x / 2 - txClock.getWidth() / 2,
-				y - txClock.getHeight() - y / 20);
-		batch.draw(txLogo, x / 2 - txLogo.getWidth() / 2, 0);
+		batch.draw(txClock, x / 2 - Gdx.graphics.getWidth() / 10, y
+				- (Gdx.graphics.getHeight() / 8) - y / 20,
+				Gdx.graphics.getWidth() / 5, Gdx.graphics.getHeight() / 8);
+		batch.draw(txLogo, x / 2 - Gdx.graphics.getWidth() / 8, 0,
+				Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 10);
 		batch.end();
 	}
 
@@ -175,5 +209,10 @@ public class mthGUI {
 
 	public boolean isChkMuteChecked() {
 		return chkMute.isChecked();
+	}
+
+	public int updateMsToVibrate() {
+		iMsToVibrate = (int) (sliVibrateLength.getValue() * iVibMsPerTick);
+		return iMsToVibrate;
 	}
 }

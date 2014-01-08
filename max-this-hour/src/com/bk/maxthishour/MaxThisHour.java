@@ -5,7 +5,7 @@ import com.badlogic.gdx.ApplicationListener;
 public class MaxThisHour implements ApplicationListener {
 
 	public static String strTag;
-	private static SpecialFeatures mySpecialFeatureObject;
+	private static SpecialFeatures mySpecialFeatureObject = null;
 
 	public MaxThisHour() {
 		// TODO Auto-generated constructor stub

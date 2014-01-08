@@ -72,7 +72,7 @@ public class mthTimer {
 	}
 
 	private void timerRanOut() {
-		Gdx.input.vibrate(1000);
+		mthUtils.notifyUser();
 		timer.cancel();
 		running = false;
 

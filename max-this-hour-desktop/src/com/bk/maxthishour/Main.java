@@ -8,9 +8,9 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "max-this-hour";
 		cfg.useGL20 = false;
-		cfg.width = 480;
-		cfg.height = 320;
-		
+		cfg.width = 384;
+		cfg.height = 592;
+
 		new LwjglApplication(new MaxThisHour(), cfg);
 	}
 }
