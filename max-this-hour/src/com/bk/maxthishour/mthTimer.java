@@ -5,10 +5,14 @@ import java.util.TimerTask;
 
 import com.badlogic.gdx.Gdx;
 
+/* Timer implements the 
+ * 
+ * 
+ */
 public class mthTimer {
 	private static mthTimer myInstance;
 	private boolean running = false;
-	Timer timer;
+	private Timer timer;
 
 	final int intervalwork = 60 * 48;
 	final int intervalpause = 60 * 12;
@@ -16,7 +20,7 @@ public class mthTimer {
 	private int interval = 0;
 	private int mode = 0; // 0 = nichts passiert, 1 run in work, 2 run in pause
 
-	public mthTimer() {
+	private mthTimer() {
 	}
 
 	public static mthTimer getInstance() {
@@ -30,6 +34,8 @@ public class mthTimer {
 
 		if (!running) {
 			timer = new Timer();
+			Gdx.app.log(MaxThisHour.strTag,
+					"interval: " + String.valueOf(interval));
 			if (interval < 1) {
 				switch (mode) {
 				case 0:
@@ -62,24 +68,19 @@ public class mthTimer {
 	}
 
 	private void iterateInterval() {
-		if (interval == 1) {
+		if (interval == 0) {
 			this.timerRanOut();
+			return;
 		}
 		interval--;
 	}
 
 	private void timerRanOut() {
-		Gdx.input.vibrate(500);
+		Gdx.input.vibrate(1000);
 		timer.cancel();
 		running = false;
-		switch (mode) {
-		case 1:
-			mode = 2;
-			break;
-		case 2:
-			mode = 1;
-			break;
-		}
+
+		mode = (mode + 2) % 2 + 1; // 1->2 , 2->1
 		startstopTimer();
 	}
 
@@ -93,6 +94,16 @@ public class mthTimer {
 
 	public boolean getRunning() {
 		return running;
+	}
+
+	public void cancelTimer() {
+		if (timer != null)
+			timer.cancel();
+	}
+
+	public void dispose() {
+		cancelTimer();
+		myInstance = null;
 	}
 
 }

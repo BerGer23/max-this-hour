@@ -1,10 +1,11 @@
 package com.bk.maxthishour;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
 
 public class MaxThisHour implements ApplicationListener {
 
-	public static final String strTag = "MAHinfo";
+	public static String strTag;
 	private static SpecialFeatures mySpecialFeatureObject;
 
 	public MaxThisHour() {
@@ -17,12 +18,15 @@ public class MaxThisHour implements ApplicationListener {
 
 	@Override
 	public void create() {
-
+		strTag = "MAHinfo";
 	}
 
 	@Override
 	public void dispose() {
 		mthGUI.getInstance().dispose();
+		strTag = null;
+		Gdx.app.exit();
+		Gdx.app.log(MaxThisHour.strTag, "now that worked well");
 	}
 
 	@Override
