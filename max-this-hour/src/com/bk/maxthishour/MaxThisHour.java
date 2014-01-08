@@ -1,7 +1,6 @@
 package com.bk.maxthishour;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 
 public class MaxThisHour implements ApplicationListener {
 
@@ -25,8 +24,6 @@ public class MaxThisHour implements ApplicationListener {
 	public void dispose() {
 		mthGUI.getInstance().dispose();
 		strTag = null;
-		Gdx.app.exit();
-		Gdx.app.log(MaxThisHour.strTag, "now that worked well");
 	}
 
 	@Override

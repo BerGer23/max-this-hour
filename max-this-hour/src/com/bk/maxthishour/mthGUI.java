@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -16,11 +17,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class mthGUI {
 
-
 	private static mthGUI myInstance;
-	private Stage stage;
-	private Skin skin;
-	private SpriteBatch batch;
+	private final Stage stage;
+	private final Skin skin;
+	private final SpriteBatch batch;
 
 	private final String[] modes = { "IDLE", "TIME TO WORK", "TIME TO PAUSE",
 			"ON HOLD" };
@@ -28,11 +28,11 @@ public class mthGUI {
 
 	// GUI elements
 
-	private Label lblStatus;
-	private CheckBox chkMute;
-	private Texture txClock;
-	private Texture txLogo;
-	private Texture txKoala;
+	private final Label lblStatus;
+	private final CheckBox chkMute;
+	private final Texture txClock;
+	private final Texture txLogo;
+	private final Texture txKoala;
 
 	// textures
 	// display variables
@@ -55,7 +55,6 @@ public class mthGUI {
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-
 		skin.getFont("default-font").setScale(2.f, 2.f);
 
 		txClock = new Texture(Gdx.files.internal("data/clock.png"));
@@ -69,11 +68,23 @@ public class mthGUI {
 		stage.addActor(table);
 
 		// mute checkbox
-		chkMute = new CheckBox("Mute for work", skin);
+		chkMute = new CheckBox("Mute phonecalls", skin);
 		chkMute.setChecked(false);
-		// chkMute.scale(5f);
-		chkMute.getCells().get(0).width(50);
-		chkMute.getCells().get(0).height(50);
+		chkMute.getCells().get(0).size(50);
+		chkMute.addListener(new InputListener() {
+
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				Gdx.app.log(MaxThisHour.strTag,
+						"clicked the checkbox for muting");
+				if (!chkMute.isChecked())
+					mthUtils.Mute();
+				else
+					mthUtils.Unmute();
+				return super.touchDown(event, x, y, pointer, button);
+			}
+		});
 
 		table.add(chkMute).width(50).spaceBottom(10);
 		table.row();

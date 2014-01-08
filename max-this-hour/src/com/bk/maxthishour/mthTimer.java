@@ -49,9 +49,6 @@ public class mthTimer {
 				}
 			}
 
-			if (mthGUI.getInstance().isChkMuteChecked() && mode < 2)
-				mthUtils.Mute();
-
 			timer.scheduleAtFixedRate(new TimerTask() {
 
 				@Override
@@ -61,7 +58,6 @@ public class mthTimer {
 			}, 1000, 1000);
 			running = true;
 		} else {
-			mthUtils.Unmute();
 			running = false;
 			timer.cancel();
 		}
